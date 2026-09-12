@@ -24,12 +24,12 @@ const DATA = {
   footerLinks: [
     {
       text: "Docs",
-      href: "https://www.mongodb.com/docs/?utm_campaign=devrel&utm_source=third-party-content&utm_medium=cta&utm_content=template-nextjs-mongodb&utm_term=jesse.hall",
+      href: "https://www.mongodb.com/docs/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel",
       icon: "FileText",
     },
     {
       text: "MongoDB Atlas Login",
-      href: "https://account.mongodb.com/account/login/?utm_campaign=devrel&utm_source=third-party-content&utm_medium=cta&utm_content=template-nextjs-mongodb&utm_term=jesse.hall",
+      href: "https://account.mongodb.com/account/login/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel",
       icon: "LogIn",
     },
   ],

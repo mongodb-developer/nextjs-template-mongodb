@@ -1,6 +1,6 @@
 ![Next.js with MongoDB](./public/og.png)
 
--> View demo: [nextjs.mongodb.com](https://nextjs.mongodb.com/?utm_campaign=devrel&utm_source=third-party-content&utm_medium=cta&utm_content=template-nextjs-mongodb&utm_term=jesse.hall)
+-> View demo: [nextjs.mongodb.com](https://nextjs.mongodb.com/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel)
 
 # Next.js with MongoDB
 
@@ -76,7 +76,7 @@ cp .env.example .env
 
 #### Get your database URL
 
-Obtain the database connection string from the Cluster tab on the [MongoDB Atlas Dashboard](https://account.mongodb.com/account/login/?utm_campaign=devrel&utm_source=third-party-content&utm_medium=cta&utm_content=template-nextjs-mongodb&utm_term=jesse.hall).
+Obtain the database connection string from the Cluster tab on the [MongoDB Atlas Dashboard](https://account.mongodb.com/account/login/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel).
 
 #### Add the database URL to the .env file
 
@@ -142,8 +142,8 @@ Expected result: the suite renders the home page and asserts the status badge sh
 
 To learn more about MongoDB, check out the MongoDB documentation:
 
-- [MongoDB Documentation](https://www.mongodb.com/docs/?utm_campaign=devrel&utm_source=third-party-content&utm_medium=cta&utm_content=template-nextjs-mongodb&utm_term=jesse.hall) - learn about MongoDB features and APIs
-- [MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/?utm_campaign=devrel&utm_source=third-party-content&utm_medium=cta&utm_content=template-nextjs-mongodb&utm_term=jesse.hall) - documentation for the official Node.js driver
+- [MongoDB Documentation](https://www.mongodb.com/docs/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel) - learn about MongoDB features and APIs
+- [MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel) - documentation for the official Node.js driver
 
 To learn more about Next.js, take a look at the following resources:
 
