@@ -1,0 +1,6 @@
+{
+  "name": "nextjs-template-mongodb",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "postCreateCommand": "npm install && bash .devcontainer/track.sh created || true",
+  "postStartCommand": "bash .devcontainer/track.sh started || true"
+}

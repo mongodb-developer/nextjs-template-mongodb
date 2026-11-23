@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { inter } from "./fonts";
 
 export const metadata: Metadata = {
-  title: "Bookmarks",
-  description:
-    "Save your useful links in one place.",
+  title: "Next.js + MongoDB",
+  description: "Use MongoDB with Next.js",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} dark`}>
       <body>{children}</body>
     </html>
   );

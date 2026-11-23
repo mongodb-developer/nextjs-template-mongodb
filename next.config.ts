@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Prevent automatic instruction-file generation.
-  agentRules: false,
-  // Keep workspace detection within this project.
+  // Pin the Turbopack workspace root to this project to avoid incorrect root
+  // inference when other lockfiles exist higher up the filesystem.
   turbopack: {
     root: import.meta.dirname,
   },

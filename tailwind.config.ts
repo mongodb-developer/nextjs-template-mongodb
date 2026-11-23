@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import defaultTheme from "tailwindcss/defaultTheme";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
     darkMode: "media",
@@ -12,7 +13,7 @@ export default {
   	extend: {
   		fontFamily: {
   			sans: [
-  				
+  				'var(--font-inter)',
                     ...defaultTheme.fontFamily.sans
                 ]
   		},
@@ -65,4 +66,5 @@ export default {
   		}
   	}
   },
+  plugins: [tailwindcssAnimate],
 } satisfies Config;
