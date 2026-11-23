@@ -1,59 +1,57 @@
 {
-  "name": "nextjs-template-mongodb",
+  "name": "mongodb-bookmarks",
   "version": "0.1.0",
   "private": true,
-  "description": "A Next.js template for building applications with MongoDB, featuring TypeScript and shadcn/ui / Tailwind CSS integration",
-  "author": {
-    "name": "Jesse Hall",
-    "url": "https://github.com/codeSTACKr"
-  },
-  "homepage": "https://github.com/mongodb-developer/nextjs-template-mongodb#readme",
+  "description": "A bookmark app built with Next.js, TypeScript and MongoDB.",
+  "homepage": "https://github.com/Eronmmer/mongodb-bookmarks-tutorial#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mongodb-developer/nextjs-template-mongodb.git"
+    "url": "git+https://github.com/Eronmmer/mongodb-bookmarks-tutorial.git"
   },
   "bugs": {
-    "url": "https://github.com/mongodb-developer/nextjs-template-mongodb/issues"
+    "url": "https://github.com/Eronmmer/mongodb-bookmarks-tutorial/issues"
   },
   "keywords": [
+    "bookmarks",
     "nextjs",
     "mongodb",
-    "typescript",
-    "tailwindcss",
-    "vercel",
-    "template",
-    "shadcn"
+    "typescript"
   ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "playwright test",
+    "test": "npm run verify",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "tsx --test tests/unit/*.test.ts",
+    "verify": "node scripts/verify.mjs",
+    "verify:dev": "node scripts/verify.mjs --dev",
+    "db:setup": "node --env-file-if-exists=.env scripts/setup-db.mjs"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.2.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.510.0",
-    "mongodb": "^7.4.0",
-    "next": "^16.2.9",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "tailwind-merge": "^3.3.0",
-    "tailwindcss-animate": "^1.0.7"
+    "mongodb": "^7.8.0",
+    "next": "^16.4.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^20",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9",
-    "eslint-config-next": "^16.2.9",
+    "eslint-config-next": "^16.4.3",
+    "mongodb-memory-server-core": "^11.3.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "4.23.15",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

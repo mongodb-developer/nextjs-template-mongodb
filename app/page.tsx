@@ -1,141 +1,119 @@
-import Image from "next/image";
-import logo from "@/assets/logo.svg";
-import logoDark from "@/assets/logo-dark.svg";
-import vercelLogotypeLight from "@/assets/vercel-logotype-light.svg";
-import vercelLogotypeDark from "@/assets/vercel-logotype-dark.svg";
+import { connection } from "next/server";
+
+import { BookmarkForm } from "@/components/bookmark-form";
+import { BookmarkItem } from "@/components/bookmark-item";
+import {
+  listBookmarks,
+} from "@/db/bookmarks";
+import type { BookmarkView } from "@/lib/bookmark-types";
 import Link from "next/link";
-import { ArrowRight, FileText, LogIn } from "lucide-react";
-import { dbConnectionStatus } from "@/db/connection-status";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
-const DATA = {
-  title: "Next.js with MongoDB",
-  description:
-    "A minimal template for building full-stack React applications using Next.js, Vercel, and MongoDB.",
-  button: {
-    text: "Deploy to Vercel",
-    href: "https://vercel.com/new/clone?repository-name=mongodb-nextjs&repository-url=https%3A%2F%2Fgithub.com%2Fmongodb-developer%2Fvercel-template-mongodb&project-name=mongodb-nextjs&demo-title=MongoDB%20%26%20Next.js%20Starter%20Template&demo-description=A%20minimal%20template%20for%20building%20full-stack%20React%20applications%20using%20Next.js%2C%20Vercel%2C%20and%20MongoDB.&demo-url=https%3A%2F%2Fnextjs.mongodb.com%2F&demo-image=https%3A%2F%2Fnextjs.mongodb.com%2Fog.png&integration-ids=oac_jnzmjqM10gllKmSrG0SGrHOH&from=templates",
-  },
-  link: {
-    text: "View on GitHub",
-    href: "https://github.com/mongodb-developer/nextjs-template-mongodb",
-  },
-  footerLinks: [
-    {
-      text: "Docs",
-      href: "https://www.mongodb.com/docs/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel",
-      icon: "FileText",
-    },
-    {
-      text: "MongoDB Atlas Login",
-      href: "https://account.mongodb.com/account/login/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=template-nextjs-mongodb&utm_term=learning.fuel",
-      icon: "LogIn",
-    },
-  ],
-};
+// MongoDB is reached from Node.js server code only.
+export const runtime = "nodejs";
 
-export default async function Home() {
-  const result = await dbConnectionStatus();
+// The page reads the database on every request; never connect during a
+// static build.
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ before?: string | string[] }>;
+}) {
+  // Marks the page dynamic and waits for a request connection, so the
+  // database is only queried for real visitors, never at build time.
+  await connection();
+
+  let bookmarks: BookmarkView[] = [];
+  const { before } = await searchParams;
+  let nextCursor: string | null = null;
+  let isOlderPage = false;
+  let isDatabaseUnavailable = false;
+
+  try {
+    const result = await listBookmarks(before);
+    bookmarks = result.bookmarks;
+    nextCursor = result.nextCursor;
+    isOlderPage = result.isOlderPage;
+  } catch {
+    // Distinguish "database down" from "empty database" for the visitor.
+    // Do not log raw driver errors or connection details here.
+    console.error("Failed to read bookmarks from the database.");
+    isDatabaseUnavailable = true;
+  }
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 md:max-w-lg md:px-0 lg:max-w-xl">
-          <main className="flex flex-1 flex-col justify-center">
-            <div className="flex gap-6 lg:gap-8 items-center mb-6 md:mb-7">
-              <Image
-                className="lg:h-8 lg:w-auto dark:hidden"
-                src={logo}
-                alt="MongoDB logo"
-                width={88}
-                height={24}
-                priority
-              />
-              <Image
-                className="hidden lg:h-8 lg:w-auto dark:block"
-                src={logoDark}
-                alt="MongoDB logo"
-                width={88}
-                height={24}
-                priority
-              />
-              <Image
-                className="lg:h-6 lg:w-auto dark:hidden"
-                src={vercelLogotypeLight}
-                alt="MongoDB logo"
-                width={88}
-                height={24}
-                priority
-              />
-              <Image
-                className="hidden lg:h-6 lg:w-auto dark:block"
-                src={vercelLogotypeDark}
-                alt="MongoDB logo"
-                width={88}
-                height={24}
-                priority
-              />
-            </div>
-            <h1 className="text-3xl font-semibold leading-none tracking-tighter md:text-4xl md:leading-none lg:text-5xl lg:leading-none">
-              {DATA.title}
+    <div className="min-h-screen bg-[#FAF7F0] text-[#1C2B26]">
+      <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
+        <header className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              Bookmarks
             </h1>
-            <p className="mt-3.5 max-w-lg text-base leading-snug tracking-tight text-[#61646B] md:text-lg md:leading-snug lg:text-xl lg:leading-snug dark:text-[#94979E]">
-              {DATA.description}
+            <p className="mt-2 text-base text-[#4B5F58]">
+              A small place for links worth keeping.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-5 md:mt-9 lg:mt-10">
-              <Button
-                asChild
-                className="rounded-full bg-[#00ED64] px-5 py-2.5 font-semibold tracking-tight text-[#001E2B] transition-colors duration-200 hover:bg-[#00684A] hover:text-[#FFFFFF] lg:px-7 lg:py-3"
+          </div>
+        </header>
+
+        <main className="mt-8 grid items-start gap-8 lg:grid-cols-[21rem_minmax(0,1fr)]">
+          <aside className="rounded-2xl border border-[#1C2B26]/10 bg-white p-5 shadow-sm lg:sticky lg:top-8">
+            <h2 className="text-lg font-semibold">Add a bookmark</h2>
+            <p className="mt-1 text-sm text-[#4B5F58]">
+              Save a link with a title and an optional note.
+            </p>
+            <BookmarkForm />
+          </aside>
+
+          <section aria-label="Saved bookmarks" className="min-w-0">
+            {isDatabaseUnavailable ? (
+              <div
+                role="alert"
+                className="rounded-2xl border border-[#B3261E]/30 bg-[#B3261E]/5 p-6"
               >
-                <Link href={DATA.button.href} target="_blank">
-                  {DATA.button.text}
-                </Link>
-              </Button>
-              <Button
-                variant="ghost"
-                asChild
-                className="group flex items-center gap-2 leading-none tracking-tight"
-              >
-                <Link href={DATA.link.href} target="_blank">
-                  {DATA.link.text}
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1 dark:text-white" />
-                </Link>
-              </Button>
-            </div>
-          </main>
-          <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-[#023430] py-5 sm:gap-2 sm:gap-6 md:pb-12 md:pt-10 dark:border-[#023430]">
-            <ul className="flex items-center">
-              {DATA.footerLinks.map((link) => {
-                const icons = {
-                  FileText: FileText,
-                  LogIn: LogIn,
-                };
-                const Icon = icons[link.icon as keyof typeof icons];
-                return (
-                  <Button
-                    key={link.text}
-                    variant="ghost"
-                    asChild
-                    className="flex items-center gap-2 opacity-70 transition-opacity duration-200 hover:opacity-100 h-auto"
-                  >
-                    <Link href={link.href} target="_blank">
-                      <Icon className="h-4 w-4 dark:text-white" />
-                      <span className="text-sm tracking-tight">{link.text}</span>
-                    </Link>
-                  </Button>
-                );
-              })}
-            </ul>
-            <Badge
-              variant={result === "Database connected" ? "default" : "destructive"}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-                result === "Database connected"
-                  ? "border-[#00ED64]/20 bg-[#00ED64]/10 text-[#00684A] dark:bg-[#00ED64]/10 dark:text-[#00ED64]"
-                  : "border-red-500/20 bg-red-500/10 text-red-500 dark:text-red-500"
-              }`}
-            >
-              {result}
-            </Badge>
-          </footer>
+                <h2 className="text-lg font-semibold text-[#8C1D18]">
+                  Couldn’t load bookmarks
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-[#8C1D18]">
+                  Please try again in a moment.
+                </p>
+              </div>
+            ) : bookmarks.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-[#1C2B26]/20 bg-white/60 p-8 text-center">
+                <h2 className="text-lg font-semibold">
+                  {isOlderPage ? "No older bookmarks" : "No bookmarks yet"}
+                </h2>
+                <p className="mt-2 text-sm text-[#4B5F58]">
+                  {isOlderPage
+                    ? "You’ve reached the end of the list."
+                    : "Add your first link with the form on this page."}
+                </p>
+              </div>
+            ) : (
+              <>
+                <ul className="space-y-3">
+                  {bookmarks.map((bookmark) => (
+                    <BookmarkItem key={bookmark.id} bookmark={bookmark} />
+                  ))}
+                </ul>
+              </>
+            )}
+            {!isDatabaseUnavailable && (isOlderPage || nextCursor) ? (
+              <nav aria-label="Bookmark pages" className="mt-5 flex flex-wrap items-center justify-between gap-3 text-sm">
+                {isOlderPage ? (
+                  <Link href="/" className="rounded-lg px-3 py-2 font-medium text-[#00684A] underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00684A]">
+                    Back to newest
+                  </Link>
+                ) : <span />}
+                {nextCursor ? (
+                  <Link href={`/?${new URLSearchParams({ before: nextCursor })}`} className="rounded-lg border border-[#1C2B26]/15 bg-white px-3 py-2 font-medium text-[#00684A] hover:bg-[#1C2B26]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00684A]">
+                    Older bookmarks
+                  </Link>
+                ) : null}
+              </nav>
+            ) : null}
+          </section>
+        </main>
+
       </div>
     </div>
   );
